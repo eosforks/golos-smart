@@ -186,11 +186,11 @@ vector<variant> golos_tester::get_all_chaindb_rows(name code, uint64_t scope, na
 
     auto prev = _chaindb.current(cursor);
     do {
-        all.push_back(v);
         auto pk = _chaindb.next(cursor);
-        if (pk == prev || pk == 0xFFFFFFFFFFFFFFFF) {   // TODO: magic is bad, update `value_at_cursor` to return `null` as end
+        if (pk == prev) {
             break;
         }
+        all.push_back(v);
         prev = pk;
         v = _chaindb.value_at_cursor(cursor);
     } while (!v.is_null());

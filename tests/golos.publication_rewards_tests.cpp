@@ -53,7 +53,9 @@ public:
 
 class reward_calcs_tester : public extended_tester {
     symbol _token_symbol;
+public: // TODO remove
     golos_posting_api post;
+private: // TODO remove
     golos_vesting_api vest;
     eosio_token_api token;
 
@@ -96,7 +98,7 @@ protected:
             BOOST_CHECK_EQUAL(success(), buy_vesting_for(u, user_vesting_funds));
             step();
         }
-        check();
+        step(); // TODO change back
         _req.clear();
         _res.clear();
     }
@@ -598,6 +600,34 @@ BOOST_FIXTURE_TEST_CASE(timepenalty_test, reward_calcs_tester) try {
     BOOST_TEST_MESSAGE("--- rewards");
     check();
     show();
+} FC_LOG_AND_RETHROW()
+
+BOOST_FIXTURE_TEST_CASE(next_test, reward_calcs_tester) try {
+    BOOST_TEST_MESSAGE("next test");
+    auto bignum = 500000000000;
+    init(bignum, 500000);
+    step();
+
+    BOOST_CHECK_EQUAL(success(), setrules({"x", bignum}, {"x", bignum}, {"x/50", 50}, 2500,
+        [](double x){ return x; }, [](double x){ return x; }, [](double x){ return x / 50.0; }));
+    step();
+    BOOST_TEST_MESSAGE("--- add_funds_to_forum");
+    BOOST_CHECK_EQUAL(success(), add_funds_to_forum(50000));
+    step();
+    BOOST_TEST_MESSAGE("--- create_message: bob");
+    BOOST_CHECK_EQUAL(success(), create_message(N(bob), "permlink"));
+    step();
+    BOOST_TEST_MESSAGE("--- create_message: bob");
+    BOOST_CHECK_EQUAL(success(), create_message(N(bob), "permlink2"));
+    step();
+    BOOST_TEST_MESSAGE("--- create_message: bob");
+    BOOST_CHECK_EQUAL(success(), create_message(N(bob), "permlink3"));
+    step();
+
+    auto msgs = post.get_messages(N(bob));
+    for (auto itr = msgs.begin(); itr != msgs.end(); ++itr) {
+        std::cout << "yes";
+    }
 } FC_LOG_AND_RETHROW()
 
 BOOST_FIXTURE_TEST_CASE(limits_test, reward_calcs_tester) try {
