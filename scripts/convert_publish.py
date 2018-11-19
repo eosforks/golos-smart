@@ -15,6 +15,8 @@ from bson.decimal128 import Decimal128
 from pymongo import MongoClient
 from config import *
 
+expiretion = timedelta(minutes = 30)
+
 def create_tags(metadata_tags):
     tags = []
     if (isinstance(metadata_tags, int)):
@@ -25,36 +27,6 @@ def create_tags(metadata_tags):
             tag_obj = { "tag": tag }
             tags.append(tag_obj)
     return tags
-  
-def char_to_symbol(c):
-  if (c >= ord('a') and c <= ord('z')):
-    return (c - ord('a')) + 6
-  if (c >= ord('1') and c <= ord('5')):
-    return (c - ord('1')) + 1;
-  return 0;
-     
-def string_to_name(s):
-  len_str = len(s)
-  sbytes = str.encode(s)
-  value = 0
-  
-  i = 0
-  while (i <= 12):
-    c = 0
-    
-    if (i < len_str and i <= 12):
-      c = char_to_symbol(sbytes[i])
-    
-    if (i < 12):
-      c = c & 0x1f
-      c = c << 64-5*(i+1)
-    else:
-      c = c & 0x0f
-      
-    value = value | c
-    i += 1
-
-  return value
 
 def create_trx(author, id_message):
     trx = ""
@@ -126,7 +98,6 @@ class PublishConverter:
                 }
             
                 isClosedMessage = True
-                expiretion = timedelta(minutes = 30)
                 date_close = datetime.strptime("2106-02-07T06:28:15", '%Y-%m-%dT%H:%M:%S').isoformat()
                 if (doc["cashout_time"].isoformat() != date_close and doc["cashout_time"].isoformat() > datetime.now().isoformat()):
                     rshares_sum += cur_rshares_raw
@@ -136,7 +107,7 @@ class PublishConverter:
                     delay_trx = {
                       "trx_id": "",
                       "sender": "gls.publish",
-                      "sender_id": hex(utils.convert_hash(doc["permlink"]) << 64 | string_to_name(doc["author"])),
+                      "sender_id": hex(utils.convert_hash(doc["permlink"]) << 64 | utils.string_to_name(doc["author"])),
                       "payer": "gls.publish",
                       "delay_until" : str(doc["cashout_time"]).replace('Z', ".000"), 
                       "expiration" :  datetime.strftime(datetime.strptime(str(doc["created"]), '%Y-%m-%dT%H:%M:%SZ') + expiretion, '%Y-%m-%dT%H:%M:%S') + ".000", 
@@ -146,7 +117,7 @@ class PublishConverter:
                       "_PAYER_" : "",
                       "_SIZE_" : 50
                     }
-                    dbs.cyberway_db["gtransaction"].save(delay_trx)
+                    self.cyberway_db["gtransaction"].save(delay_trx)
                 
                 orphan_comment = (len(doc["parent_author"]) > 0) and (not (doc["parent_author"] in self.exists_accs))
 
