@@ -49,7 +49,8 @@ class PublishConverter:
         self.publish_tables = dbs.Tables([
             ('vote',    self.publish_db['votetable'],    None, None),
             ('message', self.publish_db['messagetable'], None, None),
-            ('content', self.publish_db['contenttable'], None, None)
+            ('content', self.publish_db['contenttable'], None, None),
+            ("gtransaction", self.cyberway_db['gtransaction'], None, None)
         ])
         self.cache_period = cache_period
 
@@ -109,15 +110,15 @@ class PublishConverter:
                       "sender": "gls.publish",
                       "sender_id": hex(utils.convert_hash(doc["permlink"]) << 64 | utils.string_to_name(doc["author"])),
                       "payer": "gls.publish",
-                      "delay_until" : str(doc["cashout_time"]).replace('Z', ".000"), 
-                      "expiration" :  datetime.strftime(datetime.strptime(str(doc["created"]), '%Y-%m-%dT%H:%M:%SZ') + expiretion, '%Y-%m-%dT%H:%M:%S') + ".000", 
-                      "published" :   str(doc["created"]).replace('Z', ".000"), 
+                      "delay_until" : doc["cashout_time"].isoformat(), 
+                      "expiration" :  doc["created"].isoformat() + expiretion, 
+                      "published" :   doc["created"].isoformat(), 
                       "packed_trx" : create_trx(doc["author"], utils.convert_hash(doc["permlink"])), 
                       "_SCOPE_" : "",
                       "_PAYER_" : "",
                       "_SIZE_" : 50
                     }
-                    self.cyberway_db["gtransaction"].save(delay_trx)
+                    self.publish_tables.gtransaction.append(delay_trx)
                 
                 orphan_comment = (len(doc["parent_author"]) > 0) and (not (doc["parent_author"] in self.exists_accs))
 
