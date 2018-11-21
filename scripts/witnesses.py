@@ -34,7 +34,7 @@ def create_witness(doc, exist_accounts):
         "url" : doc["url"],
         "active" : True,
         "total_weight" : total_weight,
-        "_SCOPE_" : doc["owner"], 
+        "_SCOPE_" : "......2ndl3ka", 
         "_PAYER_" : doc["owner"], 
         "_SIZE_" : bson.Int64(61) 
     }
