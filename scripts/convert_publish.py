@@ -65,9 +65,7 @@ class PublishConverter:
         utils.printProgressBar(0, length, prefix = 'Progress:', suffix = 'Complete', length = 50)
 
         added = 0
-        passed = -1        
         for doc in cursor:
-            passed += 1
             try:
                 if doc["removed"] or (not (doc["author"] in self.exists_accs)):
                     continue
@@ -145,15 +143,16 @@ class PublishConverter:
                 if added % self.cache_period == 0:
                     print("messages converted -- ", added)
                     self.publish_tables.writeCache()
+                    utils.printProgressBar(added, length, prefix = 'Progress:', suffix = 'Complete', length = 50)
                 added += 1
-                if (passed % utils.recording_step == 0 or passed < utils.recording_step):
-                    utils.printProgressBar(passed + 1, length, prefix = 'Progress:', suffix = 'Complete', length = 50)
+                
             except Exception as e:
                 print(doc)
                 print(e.args)
                 print(traceback.format_exc())
         try:
             self.publish_tables.writeCache()
+            utils.printProgressBar(length, length, prefix = 'Progress:', suffix = 'Complete', length = 50)
         except Exception as e:
             print(e.args)
             print(traceback.format_exc())
@@ -176,9 +175,7 @@ class PublishConverter:
         utils.printProgressBar(0, length, prefix = 'Progress:', suffix = 'Complete', length = 50)
 
         added = 0
-        passed = -1
         for doc in cursor:
-            passed += 1
             try:
                 cur_mssg_id = utils.convert_hash(doc["permlink"])
                     
@@ -205,15 +202,16 @@ class PublishConverter:
                 if added % self.cache_period == 0:
                     print("votes converted -- ", added)
                     self.publish_tables.writeCache()
+                    utils.printProgressBar(added, length, prefix = 'Progress:', suffix = 'Complete', length = 50)
                 added += 1
-                if (passed % utils.recording_step == 0 or passed < utils.recording_step):
-                    utils.printProgressBar(passed + 1, length, prefix = 'Progress:', suffix = 'Complete', length = 50)
+                    
             except Exception as e:
                 print(doc)
                 print(e.args)
                 print(traceback.format_exc())
         try:
             self.publish_tables.writeCache()
+            utils.printProgressBar(length, length, prefix = 'Progress:', suffix = 'Complete', length = 50)
         except Exception as e:
             print(e.args)
             print(traceback.format_exc())
