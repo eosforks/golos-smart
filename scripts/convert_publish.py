@@ -111,7 +111,7 @@ class PublishConverter:
                       "sender_id": hex(utils.convert_hash(doc["permlink"]) << 64 | utils.string_to_name(doc["author"])),
                       "payer": "gls.publish",
                       "delay_until" : doc["cashout_time"].isoformat(), 
-                      "expiration" :  doc["created"].isoformat() + expiretion, 
+                      "expiration" :  doc["cashout_time"].isoformat() + expiretion, 
                       "published" :   doc["created"].isoformat(), 
                       "packed_trx" : create_trx(doc["author"], utils.convert_hash(doc["permlink"])), 
                       "_SCOPE_" : "",
