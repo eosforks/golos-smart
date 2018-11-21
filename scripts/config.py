@@ -2,6 +2,7 @@ BALANCE_PRECISION = 3
 BALANCE_SYMBOL = 'GLS'
 VESTING_PRECISION = 6
 VESTING_SYMBOL = 'GLS'
+TOKEN_SYMBOL = '......2ndl3k3' # replace ......2ndl3k3 with GLS after closing issue 245
 
 CYBERWAY_PREFIX='_CYBERWAY_'
 
