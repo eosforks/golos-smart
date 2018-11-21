@@ -1,6 +1,7 @@
 _100percent = 10000
 int64_max = 2**63 - 1
 uint64_max = 2**64 - 1
+recording_step = 10000
 
 fract_digits = {
     'fixp': 12,

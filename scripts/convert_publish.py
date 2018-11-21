@@ -146,7 +146,8 @@ class PublishConverter:
                     print("messages converted -- ", added)
                     self.publish_tables.writeCache()
                 added += 1
-                utils.printProgressBar(passed + 1, length, prefix = 'Progress:', suffix = 'Complete', length = 50)
+                if (passed % utils.recording_step == 0 or passed < utils.recording_step):
+                    utils.printProgressBar(passed + 1, length, prefix = 'Progress:', suffix = 'Complete', length = 50)
             except Exception as e:
                 print(doc)
                 print(e.args)
@@ -205,7 +206,8 @@ class PublishConverter:
                     print("votes converted -- ", added)
                     self.publish_tables.writeCache()
                 added += 1
-                utils.printProgressBar(passed + 1, length, prefix = 'Progress:', suffix = 'Complete', length = 50)
+                if (passed % utils.recording_step == 0 or passed < utils.recording_step):
+                    utils.printProgressBar(passed + 1, length, prefix = 'Progress:', suffix = 'Complete', length = 50)
             except Exception as e:
                 print(doc)
                 print(e.args)
